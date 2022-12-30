@@ -8,8 +8,8 @@ const NavbarItem = ({ title, selected, setSelected, link }) => {
     <>
       <Link to={link}>
         <div
-          className={`px-5 text-gray-500 h-full flex items-center cursor-pointer font-medium ${
-            title == selected ? "text-gray-100" : "hover:text-gray-300"
+          className={`px-5 h-full flex items-center cursor-pointer border-r font-medium text-black font-medium ${
+            title == selected && "bg-gray-100"
           }`}
           onClick={clickHandler}
         >

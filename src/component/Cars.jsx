@@ -1,0 +1,120 @@
+import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import axios from "axios";
+import { CARS_URL } from "../functions/restFunc";
+import Pagination from "./Pagination";
+import uuid from "react-uuid";
+import { filterActions } from "../features/filterReducer";
+
+const Cars = () => {
+  const state = useSelector((state) => state.filter);
+  const [length, setLength] = useState(0);
+  const [limit, setLimit] = useState(5);
+  const [list, setList] = useState(null);
+  const [page, setPage] = useState(null);
+  const [countOfPages, setCountOfPages] = useState(null);
+
+  const dispatch = useDispatch();
+  const { deleteTypeValue } = filterActions;
+
+  useEffect(() => {
+    (async () => {
+      await axios
+        .get(`http://localhost:5000/cars?${CARS_URL(state)}`)
+        .then((res) => res.data)
+        .then((res) => {
+          setLength(res.length);
+          setCountOfPages(Math.ceil(res.length / limit));
+          setPage(1);
+        });
+    })();
+  }, [state]);
+
+  useEffect(() => {
+    if (length != 0) {
+      (async () => {
+        await axios
+          .get(`http://localhost:5000/cars-list?page=${page}&&limit=${limit}`)
+          .then((res) => res.data)
+          .then((res) => {
+            setList(res);
+          });
+      })();
+    }
+  }, [page, length]);
+
+  return (
+    <>
+      <div className="flex max-w-[998px] m-auto bg-red gap-[15px]">
+        <div className="w-1/4 bg-white rounded"></div>
+        <div className="flex flex-col w-3/4 bg-white rounded px-[17px] py-[13px] gap-5">
+          <div className="flex flex-col">
+            <div className="w-full mb-[18px]">
+              <h2 className="text-[20px] font-semibold">
+                {length} Ads matching your search criteria
+              </h2>
+            </div>
+            <ul className="w-full flex gap-2.5">
+              {Object.entries(state)
+                .filter((option) => option[0] != "category" && option[1] != "")
+                .map((option) => {
+                  const key = option[0];
+                  const value = option[1];
+                  return (
+                    <li
+                      key={uuid()}
+                      className="px-2 py-1 text-sm rounded-[4px] bg-slate-200 flex gap-1.5 items-center"
+                    >
+                      <span>{value}</span>
+                      <span className="flex items-center relative w-[14px] h-full">
+                        <i
+                          className="material-icons text-sm h-fit absolute top-[1px] cursor-pointer"
+                          onClick={() => {
+                            dispatch(deleteTypeValue(key));
+                          }}
+                        >
+                          close
+                        </i>
+                      </span>
+                    </li>
+                  );
+                })}
+            </ul>
+          </div>
+
+          <div className="flex flex-col">
+            <ul className="w-full flex flex-col gap-5">
+              {list &&
+                list.map((car) => {
+                  console.log(car);
+                  return (
+                    <li
+                      key={uuid()}
+                      className="w-full h-60 rounded-xl flex border overflow-hidden"
+                    >
+                      <div className="w-2/4">
+                        <img className="w-full" src={car.images.mainImage} />
+                      </div>
+
+                      <div className="p-3">
+                        <h1>
+                          {car.make} {car.model}
+                        </h1>
+                      </div>
+                    </li>
+                  );
+                })}
+            </ul>
+          </div>
+          <div className="flex items-center justify-center">
+            {countOfPages && (
+              <Pagination number={countOfPages} setPage={setPage} page={page} />
+            )}
+          </div>
+        </div>
+      </div>
+    </>
+  );
+};
+
+export default Cars;

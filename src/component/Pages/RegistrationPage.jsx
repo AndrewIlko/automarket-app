@@ -1,4 +1,5 @@
 import { useState } from "react";
+import ErrorBanner from "../ErrorBanner";
 import axios from "axios";
 
 const RegistrationPage = () => {
@@ -32,12 +33,12 @@ const RegistrationPage = () => {
         .then((res) => res.data)
         .then((res) => {
           setBanner(res);
-          setEmail("");
-          setPassword1("");
-          setPassword2("");
-          setName("");
-          setSurname("");
         });
+      setEmail("");
+      setPassword1("");
+      setPassword2("");
+      setName("");
+      setSurname("");
     } catch (e) {
       console.log(e);
       setBanner({ isError: true, message: "Server is down, try again later" });
@@ -54,15 +55,7 @@ const RegistrationPage = () => {
           <h1>Registration</h1>
         </div>
         {banner.message && (
-          <div
-            className={`${
-              banner.isError
-                ? "bg-red-700 border-red-700"
-                : "bg-green-700 border-green-700"
-            } p-4 w-full rounded-lg bg-opacity-80 text-white border-2 text-center`}
-          >
-            {banner.message}
-          </div>
+          <ErrorBanner isError={banner.isError}>{banner.message}</ErrorBanner>
         )}
         <form
           className="flex flex-col bg-gray-800 rounded-lg p-4 mt-4 border border-gray-600"

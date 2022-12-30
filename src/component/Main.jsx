@@ -1,4 +1,5 @@
 import { Routes, Route } from "react-router-dom";
+import Cars from "./Cars";
 import LoginPage from "./Pages/LoginPage";
 import MainPage from "./Pages/MainPage";
 import RegistrationPage from "./Pages/RegistrationPage";
@@ -13,6 +14,7 @@ const Main = () => {
             <Route path="/" element={<MainPage />} />
             <Route path="/login" element={<LoginPage />} />
             <Route path="/registration" element={<RegistrationPage />} />
+            <Route path="/cars" element={<Cars />} />
           </Routes>
         </Wrapper>
       </main>

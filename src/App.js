@@ -1,8 +1,9 @@
 import Header from "./component/Header";
 import Main from "./component/Main";
-import { Routes } from "react-router-dom";
+import { useEffect } from "react";
 
 const App = () => {
+  useEffect(() => {}, []);
   return (
     <>
       <Header />

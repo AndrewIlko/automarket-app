@@ -1,7 +1,11 @@
+import FilterMain from "../FilterMain";
+
 const MainPage = () => {
   return (
     <>
-      <div>MainPage</div>
+      <div>
+        <FilterMain />
+      </div>
     </>
   );
 };

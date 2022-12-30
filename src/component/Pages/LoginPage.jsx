@@ -1,10 +1,18 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import axios from "axios";
+import { useDispatch } from "react-redux";
+import { userActions } from "../../features/userReducer";
+import ErrorBanner from "../ErrorBanner";
 
 const LoginPage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isSubmited, setIsSubmited] = useState(false);
+  const [banner, setBanner] = useState({ isError: false, message: "" });
+  const { setToken } = userActions;
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const emailHandler = (e) => {
     setEmail(e.target.value);
@@ -13,14 +21,28 @@ const LoginPage = () => {
     setPassword(e.target.value);
   };
 
-  const submitHandler = () => {
+  const submitHandler = async () => {
     setIsSubmited(true);
-
-    setTimeout(() => {
-      setEmail("");
-      setPassword("");
-      setIsSubmited(false);
-    }, 5000);
+    try {
+      await axios
+        .post("http://localhost:5000/login", { email, password })
+        .then((res) => res.data)
+        .then((res) => {
+          console.log(res);
+          const { isError, message, token } = res;
+          if (!isError) {
+            sessionStorage.setItem("token", token);
+            dispatch(setToken(true));
+            navigate("/");
+          } else {
+            setBanner({ isError, message });
+          }
+        });
+    } catch (e) {
+      console.log(e);
+      setBanner({ isError: true, message: "Server is down, try again later" });
+    }
+    setIsSubmited(false);
   };
   return (
     <>
@@ -28,13 +50,14 @@ const LoginPage = () => {
         <div className="text-center mb-4 text-xl font-normal">
           <h1>Sign in to AutoMarket</h1>
         </div>
-        <div></div>
+        {banner.message && (
+          <ErrorBanner isError={banner.isError}>{banner.message}</ErrorBanner>
+        )}
         <form
           className="flex flex-col bg-gray-800 rounded-lg p-4 mt-4 border border-gray-600"
           onSubmit={(e) => {
             e.preventDefault();
             submitHandler();
-            console.log("Submited");
           }}
         >
           <label className="text-white text-sm mb-2" htmlFor="email">
@@ -68,7 +91,7 @@ const LoginPage = () => {
           </button>
         </form>
         <div className="bg-gray-800 w-full h-14 rounded-lg mt-4 mb-2.5 border border-gray-600 p-4 text-sm text-white text-center">
-          New to AutoMarket?{" "}
+          New to AutoMarket?
           <Link className="text-blue-400 hover:underline" to="/registration">
             Create an account
           </Link>

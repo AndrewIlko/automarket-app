@@ -4,7 +4,7 @@ import Wrapper from "./Wrapper";
 const Header = ({ ...props }) => {
   return (
     <>
-      <header className="h-14 w-full flex justify-center items-center bg-gray-800">
+      <header className="h-[60px] w-full flex justify-center items-center border-b shadow-sm bg-white">
         <Wrapper>
           <Navbar />
         </Wrapper>

@@ -7,7 +7,11 @@ const initialState = {
 const userSlice = createSlice({
   name: "user",
   initialState,
-  reducers: {},
+  reducers: {
+    setToken: (state, action) => {
+      state.isToken = action.payload;
+    },
+  },
 });
 
 export const userReducer = userSlice.reducer;

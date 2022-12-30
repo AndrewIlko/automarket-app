@@ -5,6 +5,10 @@ module.exports = {
     extend: {},
     fontFamily: {
       inters: ["Inter", "sans-serif"],
+      colors: {
+        mainBg: "rgb(237,238,240)",
+        selectorBg: "#edeefo",
+      },
     },
   },
   plugins: [],
