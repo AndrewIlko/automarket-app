@@ -113,7 +113,8 @@ app.get("/cars", async (req, res) => {
 app.get("/cars-list", async (req, res) => {
   const { page, limit } = req.query;
   const num = page * limit;
-  res.json([...cars.data].slice(num - limit, num));
+  const result = [...cars.data].slice(num - limit, num);
+  res.json(result);
 });
 
 const start = async () => {

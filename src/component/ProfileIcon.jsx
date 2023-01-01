@@ -16,7 +16,7 @@ const ProfileIcon = () => {
           }}
         ></div>
         {popup && (
-          <div className="absolute w-28 h-32 border  rounded right-0 mt-2 flex flex-col-reverse text-black items-center px-2.5 py-1.5">
+          <div className="absolute w-28 h-32 border  rounded right-0 mt-1 flex flex-col-reverse text-black items-center px-2.5 py-1.5 bg-white">
             <div
               onClick={() => {
                 sessionStorage.removeItem("token");

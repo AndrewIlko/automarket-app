@@ -1,7 +1,7 @@
 const Wrapper = ({ children }) => {
   return (
     <>
-      <div className="container h-full max-w-7xl">{children}</div>
+      <div className="container max-w-7xl flex flex-col flex-1">{children}</div>
     </>
   );
 };

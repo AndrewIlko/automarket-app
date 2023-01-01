@@ -1,6 +1,8 @@
 import uuid from "react-uuid";
+import Scroll from "react-scroll";
 
 const Pagination = ({ number, setPage, page }) => {
+  const scroll = Scroll.animateScroll;
   const buttons = [];
   for (let i = 1; i <= number; i++) buttons.push(i);
   return (
@@ -15,6 +17,7 @@ const Pagination = ({ number, setPage, page }) => {
               }`}
               onClick={() => {
                 setPage(button);
+                scroll.scrollToTop({ duration: 0 });
               }}
             >
               {button}
