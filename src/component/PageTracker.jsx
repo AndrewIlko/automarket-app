@@ -5,7 +5,7 @@ const PageTracker = ({ resultsCount }) => {
   const state = useSelector((state) => state.filter);
   return (
     <>
-      <ul className="flex w-full my-4 mb-16 text-xs text-[#5a5e66]">
+      <ul className="flex w-full my-4 mb-14 text-xs text-[#5a5e66]">
         <li>
           <Link className="underline cursor-pointer" to="/">
             Home

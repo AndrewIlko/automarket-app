@@ -19,6 +19,7 @@ import userSchema from "./modules/userSchema.js";
 import FilterDetails from "./modules/FilterDetailsSchema.js";
 import ModelSchema from "./modules/modelSchema.js";
 import Cars from "./modules/carSchema.js";
+import authToken from "./authToken.js";
 
 app.post("/registration", async (req, res) => {
   const { email, password, personalInfo } = req.body;
@@ -114,6 +115,17 @@ app.get("/cars-list", async (req, res) => {
   const { page, limit } = req.query;
   const num = page * limit;
   const result = [...cars.data].slice(num - limit, num);
+  res.json(result);
+});
+
+app.get("/profile/cars", authToken, async (req, res) => {
+  const { user } = req.body;
+  const carsId = user.cars;
+  const result = [];
+  for (let carId of carsId) {
+    const car = await Cars.findById(carId);
+    result.push(car);
+  }
   res.json(result);
 });
 

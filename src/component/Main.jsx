@@ -2,6 +2,7 @@ import { Routes, Route } from "react-router-dom";
 import Cars from "./Cars";
 import LoginPage from "./Pages/LoginPage";
 import MainPage from "./Pages/MainPage";
+import ProfilePage from "./Pages/ProfilePage";
 import RegistrationPage from "./Pages/RegistrationPage";
 import Wrapper from "./Wrapper";
 
@@ -15,6 +16,7 @@ const Main = () => {
             <Route path="/login" element={<LoginPage />} />
             <Route path="/registration" element={<RegistrationPage />} />
             <Route path="/cars" element={<Cars />} />
+            <Route path="/profile" element={<ProfilePage />} />
           </Routes>
         </Wrapper>
       </main>

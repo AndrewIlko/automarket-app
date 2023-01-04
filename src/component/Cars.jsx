@@ -8,6 +8,7 @@ import { filterActions } from "../features/filterReducer";
 import Loading from "./Loading";
 import PageTracker from "./PageTracker";
 import { Link } from "react-router-dom";
+import CarLot from "./CarLot";
 
 const Cars = () => {
   const state = useSelector((state) => state.filter);
@@ -23,6 +24,7 @@ const Cars = () => {
 
   useEffect(() => {
     setList(null);
+    setIsLoaded(false);
     (async () => {
       await axios
         .get(`http://localhost:5000/cars?${CARS_URL(state)}`)
@@ -45,11 +47,10 @@ const Cars = () => {
           .then((res) => res.data)
           .then((res) => {
             setList([...res]);
-            setIsLoaded(false);
           });
       })();
     }
-  }, [isLoaded]);
+  }, [isLoaded, page]);
 
   return (
     <>
@@ -57,7 +58,7 @@ const Cars = () => {
         <Loading />
       ) : (
         <>
-          <div className="max-w-[998px] w-full mx-auto">
+          <div className="max-w-[998px] w-full mx-auto flex flex-1 flex-col">
             <PageTracker resultsCount={list.length} />
             <div className="flex gap-[15px] flex-1">
               <div className="w-1/4 bg-white rounded p-[18px] flex flex-col">
@@ -103,29 +104,16 @@ const Cars = () => {
                   </ul>
                 </div>
 
-                <div className="flex flex-col">
+                <div className="flex flex-col flex-1">
                   <ul className="w-full flex flex-col gap-5">
                     {list &&
-                      list.map((car) => {
+                      list.map(({ make, model, ...car }) => {
                         console.log(car);
                         return (
-                          <li
+                          <CarLot
                             key={uuid()}
-                            className="w-full h-60 rounded-xl flex border overflow-hidden"
-                          >
-                            <div className="w-2/4">
-                              <img
-                                className="w-full"
-                                src={car.images.mainImage}
-                              />
-                            </div>
-
-                            <div className="p-3">
-                              <h1>
-                                {car.make} {car.model}
-                              </h1>
-                            </div>
-                          </li>
+                            data={{ make, model, image: car.images.mainImage }}
+                          />
                         );
                       })}
                   </ul>

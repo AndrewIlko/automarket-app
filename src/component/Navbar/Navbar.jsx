@@ -30,7 +30,7 @@ const Navbar = () => {
           />
         </div>
         <div className="flex gap-4 items-center">
-          <button className="px-5 py-2.5 text-sm rounded font-medium text-black border">
+          <button className="px-5 py-2.5 text-sm rounded font-medium border bg-blue-600">
             How it works?
           </button>
           {!isToken ? <Login /> : <ProfileIcon />}
