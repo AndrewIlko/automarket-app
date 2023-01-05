@@ -5,6 +5,7 @@ import MainPage from "./Pages/MainPage";
 import ProfilePage from "./Pages/ProfilePage";
 import RegistrationPage from "./Pages/RegistrationPage";
 import Wrapper from "./Wrapper";
+import SellCarPage from "./Pages/SellCarPage";
 
 const Main = () => {
   return (
@@ -17,6 +18,7 @@ const Main = () => {
             <Route path="/registration" element={<RegistrationPage />} />
             <Route path="/cars" element={<Cars />} />
             <Route path="/profile" element={<ProfilePage />} />
+            <Route path="/sell-car" element={<SellCarPage />} />
           </Routes>
         </Wrapper>
       </main>

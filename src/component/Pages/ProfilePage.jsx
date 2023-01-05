@@ -2,11 +2,12 @@ import axios from "axios";
 import uuid from "react-uuid";
 import { useEffect, useState } from "react";
 import CarLot from "../CarLot";
-import AddCar from "../AddCar";
+import { Link } from "react-router-dom";
+import WrapperSM from "../WrapperSM";
 
 const ProfilePage = () => {
   const [list, setList] = useState(null);
-  const [isAdd, setIsAdd] = useState(false);
+
   useEffect(() => {
     (async () => {
       await axios
@@ -21,18 +22,16 @@ const ProfilePage = () => {
   }, []);
   return (
     <>
-      <div className="max-w-[998px] w-full mx-auto flex flex-1 flex-col">
+      <WrapperSM>
         <div className="text-[18px] my-5"></div>
-        <div className="w-full bg-white flex flex-col flex-1 rounded-lg p-5">
-          <div className="flex justify-end">
-            <button
-              className="px-5 py-1 border rounded flex items-center gap-2 font-medium text-sm border-black"
-              onClick={() => {
-                setIsAdd(true);
-              }}
-            >
-              <span>Add</span>
-            </button>
+        <div className="w-full bg-white flex flex-col flex-1 rounded px-5">
+          <div className="flex justify-end my-5">
+            <Link to="/sell-car">
+              <button className="px-5 py-1.5 border rounded flex items-center gap-2 font-medium text-sm shadow">
+                <i className="material-icons text-[red] text-xl">sell</i>
+                <span>Sell auto</span>
+              </button>
+            </Link>
           </div>
           <ul className="w-2/3 flex flex-col gap-5 mt-3 mx-auto">
             {list &&
@@ -47,8 +46,7 @@ const ProfilePage = () => {
               })}
           </ul>
         </div>
-      </div>
-      {isAdd && <AddCar close={setIsAdd} />}
+      </WrapperSM>
     </>
   );
 };

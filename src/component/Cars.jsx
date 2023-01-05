@@ -9,6 +9,7 @@ import Loading from "./Loading";
 import PageTracker from "./PageTracker";
 import { Link } from "react-router-dom";
 import CarLot from "./CarLot";
+import WrapperSM from "./WrapperSM";
 
 const Cars = () => {
   const state = useSelector((state) => state.filter);
@@ -58,7 +59,7 @@ const Cars = () => {
         <Loading />
       ) : (
         <>
-          <div className="max-w-[998px] w-full mx-auto flex flex-1 flex-col">
+          <WrapperSM>
             <PageTracker resultsCount={list.length} />
             <div className="flex gap-[15px] flex-1">
               <div className="w-1/4 bg-white rounded p-[18px] flex flex-col">
@@ -129,7 +130,7 @@ const Cars = () => {
                 </div>
               </div>
             </div>
-          </div>
+          </WrapperSM>
         </>
       )}
     </>

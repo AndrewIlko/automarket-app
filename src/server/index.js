@@ -3,6 +3,7 @@ import cors from "cors";
 import mongoose from "mongoose";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+import { MongoClient } from "mongodb";
 
 const SECRET_KEY = "andrewilko";
 
@@ -15,10 +16,19 @@ const PORT = 5000;
 const DB_URL =
   "mongodb+srv://admin:admin@cluster0.x9dzgnt.mongodb.net/auto-market?retryWrites=true&w=majority";
 
+const dbConnect = async (client) => {
+  const db = await client.db();
+  return db;
+};
+
+const client = new MongoClient(DB_URL);
+let db;
+
 import userSchema from "./modules/userSchema.js";
 import FilterDetails from "./modules/FilterDetailsSchema.js";
 import ModelSchema from "./modules/modelSchema.js";
 import Cars from "./modules/carSchema.js";
+import selectSell from "./modules/selectSell.js";
 import authToken from "./authToken.js";
 
 app.post("/registration", async (req, res) => {
@@ -127,6 +137,13 @@ app.get("/profile/cars", authToken, async (req, res) => {
     result.push(car);
   }
   res.json(result);
+});
+
+app.get("/select-sell/:option", async (req, res) => {
+  const { option } = req.params;
+  const db = await dbConnect(client);
+  const result = await db.collection("selectsells").findOne({ param: option });
+  res.json(result.options);
 });
 
 const start = async () => {
