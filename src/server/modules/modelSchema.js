@@ -1,7 +1,7 @@
 import { Schema, model } from "mongoose";
 
 const modelSchema = new Schema({
-  name: String | undefined,
+  make: String | undefined,
   options: [String],
 });
 

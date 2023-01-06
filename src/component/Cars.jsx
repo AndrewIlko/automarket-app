@@ -108,12 +108,17 @@ const Cars = () => {
                 <div className="flex flex-col flex-1">
                   <ul className="w-full flex flex-col gap-5">
                     {list &&
-                      list.map(({ make, model, ...car }) => {
+                      list.map(({ make, model, price, ...car }) => {
                         console.log(car);
                         return (
                           <CarLot
                             key={uuid()}
-                            data={{ make, model, image: car.images.mainImage }}
+                            data={{
+                              make,
+                              model,
+                              image: car.images[0].url,
+                              price,
+                            }}
                           />
                         );
                       })}

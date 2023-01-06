@@ -4,24 +4,61 @@ import { useState } from "react";
 import SelectSellPage from "../SelectSellPage";
 import { useDispatch, useSelector } from "react-redux";
 import { sellActions } from "../../features/sellReducer";
+import axios from "axios";
 
 const SellCarPage = () => {
+  const [isLoading, setIsLoading] = useState(false);
   const dispatch = useDispatch();
 
-  const { images } = useSelector((state) => state.sell);
+  const { images, year, price } = useSelector((state) => state.sell);
+  const state = useSelector((state) => state.sell);
   console.log(useSelector((state) => state.sell));
-  const { setImages } = sellActions;
+  const { setImages, setParam, setImageOrder, clearAll } = sellActions;
   const maxNumber = 3;
 
   const onChange = (imageList) => {
     dispatch(setImages(imageList));
   };
 
+  const addCar = async () => {
+    setIsLoading(true);
+    await axios
+      .post(
+        "http://localhost:5000/add-car",
+        { data: { ...state } },
+        {
+          headers: {
+            authorization: `Bearer ${sessionStorage.getItem("token")}`,
+          },
+        }
+      )
+      .then((res) => res.data)
+      .then((res) => {
+        console.log(res);
+      });
+    setIsLoading(false);
+  };
+
   return (
     <>
       <WrapperSM bg="bg-white">
-        <form className="px-5">
-          <h1 className="text-3xl font-semibold px-5 my-5">Adding an ad</h1>
+        <div className="flex justify-between px-5 my-5">
+          <h1 className="text-3xl font-semibold ">Adding an ad</h1>
+          <button
+            onClick={() => {
+              dispatch(clearAll());
+            }}
+          >
+            Clear all
+          </button>
+        </div>
+        <form
+          className="px-5"
+          onSubmit={(e) => {
+            e.preventDefault();
+            addCar();
+          }}
+        >
           <div className="w-[96%] mx-auto p-2.5">
             <div className="w-full flex items-center gap-3 relative">
               <div className="w-[30px] h-[30px] rounded-full bg-blue-200 flex justify-center items-center absolute -left-10">
@@ -35,7 +72,7 @@ const SellCarPage = () => {
               value={images}
               onChange={onChange}
               maxNumber={maxNumber}
-              dataURLKey="data_url"
+              dataURLKey="url"
             >
               {({
                 imageList,
@@ -62,9 +99,19 @@ const SellCarPage = () => {
                     Click or Drop here
                   </div>
                   <div className="grid grid-cols-3 gap-3">
-                    {imageList.map((image, index) => (
-                      <div key={index} className="image-item relative">
-                        <img src={image["data_url"]} alt="" />
+                    {images.map((image, index) => (
+                      <div key={index} className={`image-item relative `}>
+                        <img
+                          src={image["url"]}
+                          alt=""
+                          className={`cursor-pointer rounded ${
+                            image.url == images[0].url &&
+                            "border-2 border-red-600"
+                          }`}
+                          onClick={() => {
+                            dispatch(setImageOrder(index));
+                          }}
+                        />
                         <div className="image-item__btn-wrapper absolute top-1 right-1">
                           <button onClick={() => onImageRemove(index)}>
                             <span className="material-symbols-outlined text-red-600">
@@ -104,6 +151,10 @@ const SellCarPage = () => {
                 <input
                   type="text"
                   className="border px-1 rounded text-sm w-28"
+                  value={year}
+                  onChange={(e) => {
+                    dispatch(setParam({ type: "year", param: e.target.value }));
+                  }}
                   required
                 />
               </div>
@@ -111,14 +162,28 @@ const SellCarPage = () => {
                 <div className="w-24">City</div>
                 <SelectSellPage type="city" />
               </div>
-              <div className="mt-10 flex gap-5">
+              <div className="flex gap-5">
+                <div className="w-24">Price</div>
+                <input
+                  type="text"
+                  className="border px-1 rounded text-sm w-28"
+                  value={price}
+                  onChange={(e) => {
+                    dispatch(
+                      setParam({ type: "price", param: e.target.value })
+                    );
+                  }}
+                  required
+                />
+              </div>
+              {/* <div className="mt-10 flex gap-5">
                 <div>Vin</div>
                 <input type="text" className="border rounded" required />
-              </div>
+              </div> */}
             </div>
           </div>
           <button className="px-4 py-1.5 shaadow bg-green-500 w-[200px] text-white rounded font-medium ml-5 mt-[50px] mb-5">
-            Add
+            {isLoading ? "Adding..." : "Add"}
           </button>
         </form>
       </WrapperSM>

@@ -3,6 +3,7 @@ import cors from "cors";
 import mongoose from "mongoose";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+import bodyParser from "body-parser";
 import { MongoClient } from "mongodb";
 
 const SECRET_KEY = "andrewilko";
@@ -10,6 +11,14 @@ const SECRET_KEY = "andrewilko";
 const app = express();
 app.use(cors());
 app.use(express.json());
+app.use(bodyParser.json({ limit: "50mb" }));
+app.use(
+  bodyParser.urlencoded({
+    limit: "50mb",
+    extended: true,
+    parameterLimit: 50000,
+  })
+);
 mongoose.set("strictQuery", false);
 const PORT = 5000;
 
@@ -28,7 +37,6 @@ import userSchema from "./modules/userSchema.js";
 import FilterDetails from "./modules/FilterDetailsSchema.js";
 import ModelSchema from "./modules/modelSchema.js";
 import Cars from "./modules/carSchema.js";
-import selectSell from "./modules/selectSell.js";
 import authToken from "./authToken.js";
 
 app.post("/registration", async (req, res) => {
@@ -81,7 +89,7 @@ app.get("/filter/:type/:model?", async (req, res) => {
   }
   if (type == "model") {
     const { model } = req.params;
-    const data = await ModelSchema.findOne({ model });
+    const data = await ModelSchema.findOne({ make: model });
     if (!data) {
       return res.json();
     }
@@ -139,11 +147,53 @@ app.get("/profile/cars", authToken, async (req, res) => {
   res.json(result);
 });
 
-app.get("/select-sell/:option", async (req, res) => {
-  const { option } = req.params;
+app.get("/select-sell/:data/:optional?", async (req, res) => {
+  const { data } = req.params;
   const db = await dbConnect(client);
-  const result = await db.collection("selectsells").findOne({ param: option });
-  res.json(result.options);
+  let result;
+  if (data == "model") {
+    const { optional } = req.params;
+    result = await db.collection("DB_Cars").findOne({ make: optional });
+    return res.json(result?.models);
+  } else result = await db.collection("Info_DB").findOne({ param: data });
+  res.json(result?.options);
+});
+
+const addFilterOption = async (type, value) => {
+  const filter = await FilterDetails.findOne({ type });
+  if (filter.options.indexOf(value) == -1) {
+    filter.options.push(value);
+  }
+  await filter.save();
+};
+
+app.post("/add-car", authToken, async (req, res) => {
+  const { _id } = req.body.user;
+  const data = req.body.data;
+
+  const db = await dbConnect(client);
+  const result = await db.collection("cars").insertOne(data);
+
+  const user = await userSchema.findById(_id);
+
+  user.cars.push(result.insertedId);
+
+  await user.save();
+
+  res.json({ message: "Fine." });
+
+  await addFilterOption("year", data.year);
+
+  await addFilterOption("make", data.make);
+
+  await addFilterOption("city", data.city);
+
+  const filterModel = await ModelSchema.findOne({ make: data.make });
+
+  if (filterModel.options.indexOf(data.model) == -1) {
+    filterModel.options.push(data.model);
+  }
+  await filterModel.save();
 });
 
 const start = async () => {

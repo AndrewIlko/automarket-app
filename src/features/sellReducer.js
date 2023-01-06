@@ -8,6 +8,7 @@ const initialState = {
   year: "",
   city: "",
   VIN: "",
+  price: "",
 };
 
 const sellSlice = createSlice({
@@ -20,6 +21,24 @@ const sellSlice = createSlice({
     setParam: (state, action) => {
       const { type, param } = action.payload;
       state[type] = param;
+      if (type == "make") state["model"] = "";
+    },
+    setImageOrder: (state, action) => {
+      const firstImage = state.images[0];
+      const toSetImage = state.images[action.payload];
+
+      state.images[0] = toSetImage;
+      state.images[action.payload] = firstImage;
+    },
+    clearAll: (state) => {
+      state.category = "";
+      state.images = [];
+      state.make = "";
+      state.model = "";
+      state.year = "";
+      state.city = "";
+      state.VIN = "";
+      state.price = "";
     },
   },
 });

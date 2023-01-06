@@ -35,12 +35,17 @@ const ProfilePage = () => {
           </div>
           <ul className="w-2/3 flex flex-col gap-5 mt-3 mx-auto">
             {list &&
-              list.map(({ make, model, ...car }) => {
+              list.map(({ make, model, price, ...car }) => {
                 console.log(car);
                 return (
                   <CarLot
                     key={uuid()}
-                    data={{ make, model, image: car.images.mainImage }}
+                    data={{
+                      make,
+                      model,
+                      image: car.images[0].url,
+                      price,
+                    }}
                   />
                 );
               })}

@@ -1,4 +1,4 @@
-const CarLot = ({ data: { image, make, model } }) => {
+const CarLot = ({ data: { image, make, model, price } }) => {
   return (
     <li className="w-full h-50 rounded-xl flex border overflow-hidden">
       <div className="w-2/4">
@@ -9,6 +9,7 @@ const CarLot = ({ data: { image, make, model } }) => {
         <h1>
           {make} {model}
         </h1>
+        <div>{price}$</div>
       </div>
     </li>
   );
